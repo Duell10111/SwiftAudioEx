@@ -113,6 +113,9 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
     }
     
     var duration: TimeInterval {
+        if let seconds = currentItem?.forwardPlaybackEndTime.seconds, !seconds.isNaN {
+            return seconds
+        }
         if let seconds = currentItem?.asset.duration.seconds, !seconds.isNaN {
             return seconds
         }
