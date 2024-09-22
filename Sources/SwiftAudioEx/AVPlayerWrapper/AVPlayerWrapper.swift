@@ -37,6 +37,7 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         label: "AVPlayerWrapper.stateQueue",
         attributes: .concurrent
     )
+    fileprivate var cropEnd: CMTime? = nil
 
     public init() {
         playerTimeObserver = AVPlayerTimeObserver(periodicObserverTimeInterval: timeEventFrequency.getTime())
@@ -295,6 +296,9 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
                         asset: pendingAsset,
                         automaticallyLoadedAssetKeys: playableKeys
                     )
+                    if let cropEnd = self.cropEnd {
+                      item.forwardPlaybackEndTime = cropEnd
+                    }
                     self.item = item;
                     item.preferredForwardBufferDuration = self.bufferDuration
                     self.avPlayer.replaceCurrentItem(with: item)
@@ -309,11 +313,12 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
             })
         }
     }
-    
-    func load(from url: URL, playWhenReady: Bool, options: [String: Any]? = nil) {
+
+    func load(from url: URL, playWhenReady: Bool, options: [String: Any]? = nil, cropEnd: CMTime? = nil) {
         self.playWhenReady = playWhenReady
         self.url = url
         self.urlOptions = options
+        self.cropEnd = cropEnd
         self.load()
     }
     
@@ -321,9 +326,10 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         from url: URL,
         playWhenReady: Bool,
         initialTime: TimeInterval? = nil,
-        options: [String : Any]? = nil
+        options: [String : Any]? = nil,
+        cropEnd: CMTime? = nil
     ) {
-        self.load(from: url, playWhenReady: playWhenReady, options: options)
+        self.load(from: url, playWhenReady: playWhenReady, options: options, cropEnd: cropEnd)
         if let initialTime = initialTime {
             self.seek(to: initialTime)
         }
@@ -334,13 +340,14 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         type: SourceType = .stream,
         playWhenReady: Bool = false,
         initialTime: TimeInterval? = nil,
-        options: [String : Any]? = nil
+        options: [String : Any]? = nil,
+        cropEnd: CMTime? = nil
     ) {
         if let itemUrl = type == .file
             ? URL(fileURLWithPath: url)
             : URL(string: url)
         {
-            self.load(from: itemUrl, playWhenReady: playWhenReady, options: options)
+            self.load(from: itemUrl, playWhenReady: playWhenReady, options: options, cropEnd: cropEnd)
             if let initialTime = initialTime {
                 self.seek(to: initialTime)
             }

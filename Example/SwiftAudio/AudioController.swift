@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftAudioEx
+import CoreMedia
 
 class AudioController {
     
@@ -15,6 +16,7 @@ class AudioController {
     let player: QueuedAudioPlayer
     
     let sources: [AudioItem] = [
+        DefaultAudioItemEndTime(audioUrl: "https://traffic.libsyn.com/atpfm/atp545.mp3", artist: "Artist", title: "Chapters", albumTitle: nil, sourceType:  .stream, artwork: #imageLiteral(resourceName: "22AMI"), endTiming: CMTime(value: 10, timescale: 1)),
         DefaultAudioItem(audioUrl: "https://rntp.dev/example/Longing.mp3", artist: "David Chavez", title: "Longing", sourceType: .stream, artwork: #imageLiteral(resourceName: "22AMI")),
         DefaultAudioItem(audioUrl: "https://rntp.dev/example/Soul%20Searching.mp3", artist: "David Chavez", title: "Soul Searching (Demo)", sourceType: .stream, artwork: #imageLiteral(resourceName: "22AMI")),
         DefaultAudioItem(audioUrl: "https://rntp.dev/example/Lullaby%20(Demo).mp3", artist: "David Chavez", title: "Lullaby (Demo)", sourceType: .stream, artwork: #imageLiteral(resourceName: "cover")),

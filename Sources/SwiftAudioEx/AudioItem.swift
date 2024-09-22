@@ -42,6 +42,11 @@ public protocol InitialTiming {
     func getInitialTime() -> TimeInterval
 }
 
+/// Make your `AudioItem`-subclass conform to this protocol to control enable the ability to end an item at a specific time of playback.
+public protocol EndTiming {
+    func getEndTime() -> CMTime
+}
+
 /// Make your `AudioItem`-subclass conform to this protocol to set initialization options for the asset. Available keys available at [Apple Developer Documentation](https://developer.apple.com/documentation/avfoundation/avurlasset/initialization_options).
 public protocol AssetOptionsProviding {
     func getAssetOptions() -> [String: Any]
@@ -135,6 +140,22 @@ public class DefaultAudioItemInitialTime: DefaultAudioItem, InitialTiming {
         initialTime
     }
     
+}
+
+/// An AudioItem that also conforms to the `InitialTiming`-protocol
+public class DefaultAudioItemEndTime: DefaultAudioItem, EndTiming {
+
+    public var endTiming: CMTime
+
+    public init(audioUrl: String, artist: String?, title: String?, albumTitle: String?, sourceType: SourceType, artwork: AudioItemImage?, endTiming: CMTime) {
+        self.endTiming = endTiming
+        super.init(audioUrl: audioUrl, artist: artist, title: title, albumTitle: albumTitle, sourceType: sourceType, artwork: artwork)
+    }
+
+    public func getEndTime() -> CMTime {
+        endTiming
+    }
+
 }
 
 /// An AudioItem that also conforms to the `AssetOptionsProviding`-protocol
